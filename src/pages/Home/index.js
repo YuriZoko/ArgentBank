@@ -1,31 +1,16 @@
 import React from 'react';
-import '../../css/main.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
-import argentBankLogo from '../../img/argentBankLogo.png';
+import '../../css/main.css';
 import iconChat from '../../img/icon-chat.png';
 import iconMoney from '../../img/icon-money.png';
 import iconSecurity from '../../img/icon-security.png';
+import FeatureItem from '../../components/featureItem';
+import Header from '../../components/header';
+import Footer from '../../components/footer';
 
 const Home = () => {
   return (
     <div>
-      <nav className="main-nav">
-        <a className="main-nav-logo" href="/">
-          <img
-            className="main-nav-logo-image"
-            src={argentBankLogo}
-            alt="Argent Bank Logo"
-          />
-          <h1 className="sr-only">Argent Bank</h1>
-        </a>
-        <div>
-          <a className="main-nav-item" href="/sign-in">
-            <FontAwesomeIcon icon={faUserCircle} />
-            Sign In
-          </a>
-        </div>
-      </nav>
+      <Header />
       <main>
         <div className="hero">
           <section className="hero-content">
@@ -55,19 +40,9 @@ const Home = () => {
           />
         </section>
       </main>
-      <footer className="footer">
-        <p className="footer-text">Copyright 2020 Argent Bank</p>
-      </footer>
+    <Footer />
     </div>
   );
 };
-
-const FeatureItem = ({ icon, title, description }) => (
-  <div className="feature-item">
-    <img src={icon} alt="Feature Icon" className="feature-icon" />
-    <h3 className="feature-item-title">{title}</h3>
-    <p>{description}</p>
-  </div>
-);
 
 export default Home;
