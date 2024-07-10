@@ -2,27 +2,13 @@ import React from 'react';
 import '../../css/main.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
-import argentBankLogo from '../../img/argentBankLogo.png';
+import Header from '../../components/header';
+import Footer from '../../components/footer';
 
 const Login = () => {
   return (
     <div>
-      <nav className="main-nav">
-        <a className="main-nav-logo" href="/">
-          <img
-            className="main-nav-logo-image"
-            src={argentBankLogo}
-            alt="Argent Bank Logo"
-          />
-          <h1 className="sr-only">Argent Bank</h1>
-        </a>
-        <div>
-          <a className="main-nav-item" href="/sign-in">
-            <FontAwesomeIcon icon={faUserCircle} />
-            Sign In
-          </a>
-        </div>
-      </nav>
+    <Header />
       <main className="main bg-dark">
         <section className="sign-in-content">
           <FontAwesomeIcon icon={faUserCircle} className="sign-in-icon" />
@@ -44,9 +30,7 @@ const Login = () => {
           </form>
         </section>
       </main>
-      <footer className="footer">
-        <p className="footer-text">Copyright 2020 Argent Bank</p>
-      </footer>
+    <Footer />
     </div>
   );
 };
