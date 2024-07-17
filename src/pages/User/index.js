@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../../css/main.css';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const User = () => {
+  const { token } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+      navigate('/sign-in');
+    }
+  }, [token, navigate]);
+
+  if (!token) {
+    return null;
+  }
+
   return (
     <div>
-    <Header />
+      <Header />
       <main className="main bg-dark">
         <div className="header">
           <h1>Welcome back<br />Tony Jarvis!</h1>
@@ -29,7 +44,7 @@ const User = () => {
           description="Current Balance"
         />
       </main>
-    <Footer />
+      <Footer />
     </div>
   );
 };

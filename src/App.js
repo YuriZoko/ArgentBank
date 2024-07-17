@@ -1,7 +1,16 @@
 import logo from './logo.svg';
 import './App.css';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { fetchUser } from './redux/authSlice';
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
+
   return (
     <div className="App">
       <header className="App-header">

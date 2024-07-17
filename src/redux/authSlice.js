@@ -16,10 +16,9 @@ export const login = createAsyncThunk(
         }),
       });
       const data = await response.json();
-      console.log(data);
       if (data.status === 200) {
         localStorage.setItem('token', data.body.token);
-        return data.body;
+        return { ...data.body };
       } else {
         return thunkAPI.rejectWithValue(data.message);
       }
@@ -33,7 +32,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: {
     user: null,
-    token: null,
+    token: localStorage.getItem('token') || null,
     error: null,
     status: 'idle',
   },
@@ -43,6 +42,10 @@ const authSlice = createSlice({
       state.token = null;
       localStorage.removeItem('token');
     },
+    setUser: (state, action) => {
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -62,6 +65,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, setUser } = authSlice.actions;
 
 export default authSlice.reducer;
