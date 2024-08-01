@@ -2,14 +2,15 @@ import logo from './logo.svg';
 import './App.css';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { fetchUser } from './redux/authSlice';
+import { fetchUserProfile } from './redux/authSlice';
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchUser());
-  }, [dispatch]);
+    if (token) {
+      dispatch(fetchUserProfile());
+    }  }, [dispatch]);
 
   return (
     <div className="App">

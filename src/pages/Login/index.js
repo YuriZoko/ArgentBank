@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
-import { login } from '../../redux/authSlice';
+import { login, fetchUserProfile } from '../../redux/authSlice';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -17,9 +17,26 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(login({ email: username, password }));
+    dispatch(login({ email: username, password }))
+      .then((resultAction) => {
+        if (login.fulfilled.match(resultAction)) {
+          dispatch(fetchUserProfile())
+            .then((profileResult) => {
+              if (fetchUserProfile.fulfilled.match(profileResult)) {
+                navigate('/user'); 
+              }
+            })
+            .catch((profileError) => {
+              console.error("Profile fetch failed:", profileError);
+            });
+        } else {
+          console.log("Login failed:", resultAction.payload);
+        }
+      })
+      .catch((loginError) => {
+        console.error("Login error:", loginError);
+      });
   };
-
   useEffect(() => {
     if (status === 'succeeded') {
       navigate('/user');

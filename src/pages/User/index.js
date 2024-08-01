@@ -1,13 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../css/main.css';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { fetchUserProfile } from '../../redux/authSlice';
 
 const User = () => {
-  const { token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const { user, token, status, error } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const [editing, setEditing] = useState(false);
+  const [username, setUsername] = useState(user?.userName || '');
 
   useEffect(() => {
     if (!token) {
@@ -19,13 +23,88 @@ const User = () => {
     return null;
   }
 
+  const updateUserProfile = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/v1/user/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userName: username }),
+      });
+
+      const data = await response.json();
+
+      if (data.status === 200) {
+        dispatch(fetchUserProfile());
+        setEditing(false);
+      } else {
+        console.error('Failed to update profile:', data.message);
+      }
+    } catch (err) {
+      console.error('An error occurred while updating the profile:', err);
+    }
+  };
+
+  const handleEditClick = () => {
+    setEditing(true);
+  };
+
+  const handleSaveClick = () => {
+    updateUserProfile();
+  };
+
+  const handleCancelClick = () => {
+    setEditing(false);
+    setUsername(user?.userName || '');
+  };
+
   return (
     <div>
       <Header />
       <main className="main bg-dark">
         <div className="header">
-          <h1>Welcome back<br />Tony Jarvis!</h1>
-          <button className="edit-button">Edit Name</button>
+          <h1>
+            Welcome back
+            <br />
+            {user?.firstName} {user?.lastName}!
+          </h1>
+          {editing ? (
+            <div className="edit-form-container">
+              <div className="edit-form">
+                <div className="input-wrapper">
+                  <label htmlFor="username">Username</label>
+                  <input
+                    type="text"
+                    id="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                </div>
+                <div className="input-wrapper">
+                  <label htmlFor="firstName">FirstName</label>
+                  <input type="text" id="firstName" value={user?.firstName} readOnly />
+                </div>
+                <div className="input-wrapper">
+                  <label htmlFor="lastName">LastName</label>
+                  <input type="text" id="lastName" value={user?.lastName} readOnly />
+                </div>
+                <div className="button-group">
+                  <button className="edit-button" onClick={handleSaveClick}>
+                    Save
+                  </button>
+                  <button className="edit-button" onClick={handleCancelClick}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <button className="edit-button" onClick={handleEditClick}>
+              Edit Name
+            </button>
+          )}
         </div>
         <h2 className="sr-only">Accounts</h2>
         <Account
@@ -43,6 +122,8 @@ const User = () => {
           amount="$184.30"
           description="Current Balance"
         />
+        {status === 'loading' && <p>Loading...</p>}
+        {status === 'failed' && <p>Error: {error}</p>}
       </main>
       <Footer />
     </div>

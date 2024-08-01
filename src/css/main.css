@@ -100,6 +100,27 @@ body {
   font-size: 0.9rem;
 }
 
+.edit-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.edit-form {
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-evenly;
+}
+
 @media (min-width: 920px) {
   .hero {
     height: 400px;
@@ -188,18 +209,24 @@ body {
 
 .input-wrapper {
   display: flex;
-  flex-direction: column;
-  text-align: left;
-  margin-bottom: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  margin-bottom: 15px;
 }
 
 .input-wrapper label {
+  flex: 0 0 30%;
+  margin-right: 10px;
   font-weight: bold;
+  text-align: right;
 }
 
 .input-wrapper input {
-  padding: 5px;
-  font-size: 1.2rem;
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 .footer {
