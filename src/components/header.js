@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle, faPerson } from '@fortawesome/free-solid-svg-icons';
-import argentBankLogo from '../img/argentBankLogo.png';
+import argentBankLogo from '../img/argentBankLogo.webp';
 import '../css/main.css';
 import { logout } from '../redux/authSlice';
 const Header = () => {
