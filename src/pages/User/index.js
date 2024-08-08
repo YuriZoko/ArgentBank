@@ -4,7 +4,7 @@ import Header from '../../components/header';
 import Footer from '../../components/footer';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { fetchUserProfile } from '../../redux/authSlice';
+import { updateUserProfile } from '../../redux/authSlice';
 
 const User = () => {
   const dispatch = useDispatch();
@@ -29,36 +29,18 @@ const User = () => {
     return null;
   }
 
-  const updateUserProfile = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/api/v1/user/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ userName: username }),
-      });
-
-      const data = await response.json();
-
-      if (data.status === 200) {
-        dispatch(fetchUserProfile());
+  const handleSaveClick = () => {
+    dispatch(updateUserProfile({ token, username }))
+      .then(() => {
         setEditing(false);
-      } else {
-        console.error('Failed to update profile:', data.message);
-      }
-    } catch (err) {
-      console.error('An error occurred while updating the profile:', err);
-    }
+      })
+      .catch((err) => {
+        console.error('An error occurred while updating the profile:', err);
+      });
   };
 
   const handleEditClick = () => {
     setEditing(true);
-  };
-
-  const handleSaveClick = () => {
-    updateUserProfile();
   };
 
   const handleCancelClick = () => {

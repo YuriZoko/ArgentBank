@@ -19,7 +19,6 @@ export const login = createAsyncThunk(
       const data = await response.json();
 
       if (data.status === 200) {
-        localStorage.setItem('token', data.body.token);
         return { token: data.body.token };
       } else {
         return thunkAPI.rejectWithValue(data.message);
@@ -33,7 +32,8 @@ export const login = createAsyncThunk(
 export const fetchUserProfile = createAsyncThunk(
   'auth/fetchUserProfile',
   async (_, thunkAPI) => {
-    const token = localStorage.getItem('token');
+    const state = thunkAPI.getState();
+    const token = state.auth.token;
     if (!token) {
       return thunkAPI.rejectWithValue('No token found');
     }
@@ -48,7 +48,6 @@ export const fetchUserProfile = createAsyncThunk(
       });
       const data = await response.json();
       if (data.status === 200) {
-        localStorage.setItem('user', JSON.stringify(data.body));
         return data.body;
       } else {
         return thunkAPI.rejectWithValue(data.message);
@@ -59,11 +58,37 @@ export const fetchUserProfile = createAsyncThunk(
   }
 );
 
+export const updateUserProfile = createAsyncThunk(
+  'auth/updateUserProfile',
+  async ({ token, username }, thunkAPI) => {
+    try {
+      const response = await fetch('http://localhost:3001/api/v1/user/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userName: username }),
+      });
+
+      const data = await response.json();
+
+      if (data.status === 200) {
+        return data.body;
+      } else {
+        return thunkAPI.rejectWithValue(data.message);
+      }
+    } catch (err) {
+      return thunkAPI.rejectWithValue('An error occurred while updating the profile.');
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: JSON.parse(localStorage.getItem('user')) || null,
-    token: localStorage.getItem('token') || null,
+    user: null,
+    token: null,
     error: null,
     status: 'idle',
   },
@@ -71,8 +96,8 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      state.error = null;
+      state.status = 'idle';
     },
   },
   extraReducers: (builder) => {
@@ -98,6 +123,18 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(updateUserProfile.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.user = { ...state.user, userName: action.payload.userName };
+        state.error = null;
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       });
