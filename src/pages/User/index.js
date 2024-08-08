@@ -19,6 +19,12 @@ const User = () => {
     }
   }, [token, navigate]);
 
+  useEffect(() => {
+    if (user) {
+      setUsername(user.userName);
+    }
+  }, [user]);
+  
   if (!token) {
     return null;
   }
